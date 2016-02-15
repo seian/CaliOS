@@ -1,0 +1,1 @@
+nasm <ASM.asm> -f bin -o <IMAGE.img>
