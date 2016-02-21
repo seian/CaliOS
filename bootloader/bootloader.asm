@@ -155,7 +155,7 @@ PRINTMESSAGE:
 
     ; y coord
     mov ax, word[bp + 0x06]     ; parameter 2(y)
-    mov si, 160                 ; 80 characters * 2 for a char
+    mov si, 0xA0                 ; 80 characters * 2 for a char
     mul si                      ; multiply si with ax
     mov di, ax                  ; value y
 
