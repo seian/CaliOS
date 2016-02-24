@@ -5,24 +5,9 @@ SECTION .text
 
 jmp 0x07C0:START        ; move to START label
 
-; SUCCESS MESSAGES
-MBRINITMSG:     db '[SUCCESS] Master Boot Record init', 0
-DISKCOMPLMSG:   db '[SUCCESS] Disk Loading Completed', 0
-
-; INFO MESSAGES
-DISKINITMSG:    db '[INFO]    Loading Disk', 0
-
-; ERROR MESSAGES
-DISKERRMSG:     db '[ERROR]   Disk Loading Failure', 0
-
 ; GLOBAL ENV VALUES
-TOTALSECTORCOUNT:   dw  1024
-
-; DISK Loaders
-SECTORNUMBER:   db  0x02
-HEADNUMBER:     db  0x00
-TRACKNUMBER:    db  0x00
-
+TOTALSECTORCOUNT:   dw  0x02
+KERNEL32SECTORCOUNT: dw 0x02
 
 
 START:
@@ -104,6 +89,7 @@ START:
 
     mov al, byte[SECTORNUMBER]
     add al, 0x01
+    mov byte[SECTORNUMBER], al
     cmp al, 0x13
     jl .READDATA
 
@@ -190,6 +176,22 @@ PRINTMESSAGE:
     ret
 
 
+
+; SUCCESS MESSAGES
+MBRINITMSG:     db '[SUCCESS] Master Boot Record init', 0
+DISKCOMPLMSG:   db '[SUCCESS] Disk Loading Completed', 0
+
+; INFO MESSAGES
+DISKINITMSG:    db '[INFO]    Loading Disk', 0
+
+; ERROR MESSAGES
+DISKERRMSG:     db '[ERROR]   Disk Loading Failure', 0
+
+
+; DISK Loaders
+SECTORNUMBER:   db  0x02
+HEADNUMBER:     db  0x00
+TRACKNUMBER:    db  0x00
 
 
 times 510 - ($ - $$)    db 0x00

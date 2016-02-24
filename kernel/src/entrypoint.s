@@ -8,6 +8,19 @@ START:
     mov ds, ax
     mov es, ax
 
+    mov ax, 0x2401
+    int 0x15
+    jc  .A20GATEERROR
+    jmp .A20GATESUCCESS
+
+
+.A20GATEERROR:
+    in al, 0x92
+    or al, 0x0020
+    and al, 0xFE
+    out 0x92, al
+
+.A20GATESUCCESS:
     cli
 
     lgdt [GDTR]
@@ -36,7 +49,7 @@ PROTECTEDMODE:
     call .PRINTMSG
     add  esp, 0x0C
 
-    jmp  $
+    jmp  dword 0x08:0x10200
 
 .PRINTMSG:
     push ebp
