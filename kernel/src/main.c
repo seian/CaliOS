@@ -1,4 +1,6 @@
-#include "Types.h"
+#include "page.h"
+#include "types.h"
+#include "modeswitch.h"
 
 void kPrintString(int x, int y, const char *str);
 BOOL kInitializeKernel64Area(void);
@@ -6,6 +8,8 @@ BOOL kIsMemoryEnough(void);
 
 void main(void) {
     DWORD i;
+    DWORD dwEAX, dwEBX, dwECX, dwEDX;
+    char vcVendorString[13] = {0,};
 
     kPrintString(0, 4, "[SUCCESS] C KERNEL MODE");
     kPrintString(0, 5, "[INFO]    IA-32e MODE ENTRY");
@@ -22,7 +26,24 @@ void main(void) {
     }
 
     kPrintString(0, 7, "[SUCCESS] IA-32e Kernel Init Completed");
-    kPrintString(0, 9, "LBH ZZANG");
+
+    kInitializePageTables();
+
+    kPrintString(0, 8, "[SUCCESS] IA-32e Page Tables Initialized");
+
+    kReadCPUID(0x00, &dwEAX, &dwEBX, &dwECX, &dwEDX);
+    *(DWORD*)vcVendorString = dwEBX;
+    *((DWORD*)vcVendorString + 1) = dwEDX;
+    *((DWORD*)vcVendorString + 2) = dwECX;
+
+    kReadCPUID(0x80000001, &dwEAX, &dwEBX, &dwECX, &dwEDX);
+
+    if(dwEDX & (1 << 29)) {
+        kPrintString(0, 9, "[SUCCESS] 64bit support check");
+    } else {
+        kPrintString(0, 9, "[FAILURE] CPU doesn't support 64bit");
+    }
+
     while(1);
 }
 

@@ -28,12 +28,13 @@ START:
     mov eax, 0x4000003B
     mov cr0, eax
 
-    jmp dword 0x08: (PROTECTEDMODE - $$ + 0x10000)
-
+    ;jmp dword 0x08: (PROTECTEDMODE - $$ + 0x10000)
+    jmp dword 0x18: (PROTECTEDMODE - $$ + 0x10000)
 
 [BITS 32]
 PROTECTEDMODE:
-    mov ax, 0x10
+    mov ax, 0x20
+    ;mov ax, 0x10
     mov ds, ax
     mov es, ax
     mov fs, ax
@@ -49,7 +50,8 @@ PROTECTEDMODE:
     call .PRINTMSG
     add  esp, 0x0C
 
-    jmp  dword 0x08:0x10200
+    ;jmp  dword 0x08:0x10200
+    jmp dword 0x18:0x10200
 
 .PRINTMSG:
     push ebp
@@ -104,6 +106,22 @@ GDTR:
 
 
 GDT:
+    IA_32eCODEDESCRIPTOR:
+        dw 0xFFFF
+        dw 0x0000
+        db 0x00
+        db 0x9A
+        db 0xAF
+        db 0x00
+
+    IA_32eDATADESCRIPTOR:
+        dw 0xFFFF
+        dw 0x0000
+        db 0x00
+        db 0x92
+        db 0xAF
+        db 0x00
+
     NULLDescriptor:
         dw 0x0000   ; segment size[15:0]
         dw 0x0000   ; base address[15:0]
